@@ -1,0 +1,84 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.*;
+import java.util.regex.*;
+import java.util.stream.*;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+
+class Result {
+
+    /*
+     * Complete the 'receivedText' function below.
+     *
+     * The function is expected to return a STRING.
+     * The function accepts STRING S as parameter.
+     */
+
+    public static String receivedText(String S) {
+    // WRITE DOWN YOUR CODE HERE
+        String str = S;
+        char[] chars = str.toCharArray();
+        String result ="";
+        int index = 0;
+        int leftIndex = 0;
+        boolean enableDigit = true;
+        for (char ch : chars) {
+
+            if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (ch>='0' && ch <='9' && enableDigit) || ch == '_') {
+                if(result.length() > 0) {
+                    if(leftIndex!=0 && leftIndex<=index) {
+                        result = result.substring(0,leftIndex-1) + ch + result.substring(leftIndex-1);
+                        leftIndex++;
+                        index++;
+                    }
+                    else {
+                        result += ch ;
+                        index++;
+                    }
+                }
+                else {
+                    result += ch ;
+                    index ++;
+                }
+            }
+            if( ch ==  '*') {
+                result = result.substring(0, result.length()-1);
+                index--;
+            }
+            if(ch == '<') {
+                leftIndex = 1;
+            }
+            if (ch == '>') {
+                leftIndex = 0;
+                index = result.length()-1;
+            }
+            if (ch == '#') {
+                enableDigit = !enableDigit;
+            }
+        }
+        return result;
+    }
+
+}
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        String S = bufferedReader.readLine();
+
+        String result = Result.receivedText(S);
+
+        bufferedWriter.write(result);
+        bufferedWriter.newLine();
+
+        bufferedReader.close();
+        bufferedWriter.close();
+    }
+}
